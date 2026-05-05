@@ -1,10 +1,10 @@
 import tkinter as tk
 
-# ─────────────────────────────────────────────────────────────────
-# BrickBound — ventana_menu.py
-# Branch: Diseño-de-Ventanas
-# Descripción: Pantalla de menú principal del juego. Contiene los botones de navegación principales.
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
+# BrickBound — main.py
+# Curso: Introducción a la Programación LL — ITCR
+# Descripción: Archivo principal del juego. Contiene toda la lógica, ventanas y funciones del programa.
+# -----------------------------------------------------------------
 
 # ── Paleta de colores ──
 COLOR_FONDO       = "#0a0a0f"   # Negro azulado profundo
@@ -22,6 +22,10 @@ FUENTE_SUBTITULO = ("Courier", 11)
 FUENTE_BOTON     = ("Courier", 15, "bold")
 FUENTE_PEQUENA   = ("Courier", 9)
 
+# -----------------------------------------------------------------
+# SECCIÓN 1 — MENÚ PRINCIPAL
+# Copia de esta sección va en: Diseño-de-Ventanas/ventana_menu.py
+# -----------------------------------------------------------------
 
 # Función auxiliar: efecto hover en botones
 # Cambia color al pasar y al salir el mouse del botón
@@ -132,3 +136,62 @@ def mostrar_menu(ventana, cb_jugar, cb_editor, cb_puntajes):
     # ── Pie de página ──
     tk.Label(ventana,text="© 2026  BRICKBOUND  —  ITCR  Introducción a la Programación LL",bg=COLOR_FONDO,fg=COLOR_ACENTO,
              font=FUENTE_PEQUENA).place(relx=0.5, rely=0.97, anchor="center")
+    
+# -----------------------------------------------------------------
+# SECCIÓN 2 — SELECCIÓN DE MAPA
+# Copia de esta sección va en: Diseño-de-Ventanas/ventana_seleccion_mapa.py
+# (Por implementar)
+# -----------------------------------------------------------------
+ 
+def mostrar_seleccion_mapa():
+    pass  # TODO
+ 
+# -----------------------------------------------------------------
+# SECCIÓN 3 — JUEGO
+# Copia de esta sección va en: Diseño-de-Ventanas/ventana_juego.py
+# (Por implementar)
+# -----------------------------------------------------------------
+ 
+def mostrar_juego():
+    pass  # TODO
+ 
+# -----------------------------------------------------------------
+# SECCIÓN 4 — EDITOR DE MAPAS
+# Copia de esta sección va en: Diseño-de-Ventanas/ventana_editor.py
+# (Por implementar)
+# -----------------------------------------------------------------
+ 
+def mostrar_editor():
+    pass  # TODO
+ 
+# -----------------------------------------------------------------
+# SECCIÓN 5 — PUNTAJES
+# Copia de esta sección va en: Diseño-de-Ventanas/ventana_puntajes.py
+# Excepción: leer/escribir puntajes usa un archivo externo puntajes.txt
+# -----------------------------------------------------------------
+ 
+def mostrar_puntajes():
+    pass  # TODO
+ 
+# -----------------------------------------------------------------
+# SECCIÓN 6 — RESULTADO FINAL
+# Copia de esta sección va en: Diseño-de-Ventanas/ventana_resultado.py
+# (Por implementar)
+# -----------------------------------------------------------------
+ 
+def mostrar_resultado():
+    pass  # TODO
+ 
+# -----------------------------------------------------------------
+# INICIO DEL PROGRAMA
+# -----------------------------------------------------------------
+ 
+ventana = tk.Tk()
+ventana.title("BrickBound")
+ventana.geometry("800x600")
+ventana.resizable(False, False)
+ventana.config(bg=COLOR_FONDO)
+ 
+mostrar_menu()
+ 
+ventana.mainloop()

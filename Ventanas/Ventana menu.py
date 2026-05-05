@@ -3,8 +3,7 @@ import tkinter as tk
 # ─────────────────────────────────────────────────────────────────
 # BrickBound — ventana_menu.py
 # Branch: Diseño-de-Ventanas
-# Descripción: Pantalla de menú principal del juego.
-#              Contiene los botones de navegación principales.
+# Descripción: Pantalla de menú principal del juego. Contiene los botones de navegación principales.
 # ─────────────────────────────────────────────────────────────────
 
 # ── Paleta de colores ──
