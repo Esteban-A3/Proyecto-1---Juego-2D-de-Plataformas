@@ -143,7 +143,7 @@ def mostrar_menu():
 # -----------------------------------------------------------------
 
 #Función: verificar_nombre
-# Propósito: si el jugador no tiene nombre le pide uno
+# Propósito: si el jugador no tiene nombre le pide uno antes de avanzar al editor o al juego
 # solo aparece una vez por sesion ya que una vez escrito el nombre esta funcion impide escribir otro
 def verificar_nombre_J():
     if nombre_jugador == "":
@@ -265,14 +265,13 @@ def mostrar_seleccion_mapa():
 # Copia de esta sección va en: Diseño-de-Ventanas/ventana_juego.py
 # (Por implementar)
 # -----------------------------------------------------------------
- 
+
 def mostrar_juego():
     pass  # TODO
  
 # -----------------------------------------------------------------
 # SECCIÓN 4 — EDITOR DE MAPAS
 # -----------------------------------------------------------------
-
 # Constantes del editor
 FILAS          = 15
 COLUMNAS       = 25
@@ -280,7 +279,6 @@ TAM_CELDA      = 32        # píxeles por celda
 ANCHO_PANEL    = 200       # ancho del panel de herramientas
 ANCHO_GRILLA   = COLUMNAS * TAM_CELDA   # 800px, es el ancho del espacio usable
 ALTO_GRILLA    = FILAS    * TAM_CELDA   # 480px, es largo del espacio usable
- 
 # Códigos de cada elemento en la matriz, es usadado para calcular puntaje y para guardar el mapa
 VACIO          = 0
 BLOQUE         = 1
@@ -290,16 +288,14 @@ ENEMIGO_PAT    = 4   # enemigo patrulla
 ENEMIGO_LAN    = 5   # enemigo lanzador
 INICIO         = 6
 META           = 7
- 
 # Colores de cada elemento en la cuadrícula, se hace en lista para poder evaluarlo con un for
 COLORES_CELDAS = {VACIO: "#1a1a2e",BLOQUE: "#8B5E3C",ESCALERA: "#C8A96E",TRAMPA: "#C0392B",ENEMIGO_PAT: "#8E44AD",ENEMIGO_LAN: "#1A8FC1",INICIO: "#27AE60",META: "#F5C542"}
- 
+
 # Etiquetas visibles en el panel de herramientas, se hace en lista para poder evaluarlo con un for
 ETIQUETAS_ELEMENTOS = {VACIO: "Borrador",BLOQUE: "Bloque",ESCALERA: "Escalera",TRAMPA: "Trampa",ENEMIGO_PAT: "Enemigo Patrulla",ENEMIGO_LAN: "Enemigo Lanzador",INICIO: "Inicio Jugador",META: "Meta"}
- 
+
 # Función: crear_matriz_vacia
-# Propósito: genera una matriz de FILAS x COLUMNAS llena de ceros
-#            que representa el mapa vacío al abrir el editor.
+# Propósito: genera una matriz de FILAS x COLUMNAS llena de ceros que representa el mapa vacío al abrir el editor.
 def crear_matriz_vacia():
     matriz = []  #La matriz empieza vacia
     for _ in range(FILAS):  #En cada fila
@@ -317,10 +313,9 @@ def crear_matriz_vacia():
 #   0,1,1,0,...
 #   0,0,2,0,...
 #   ---        ← separador entre mapas
-
 def guardar_mapa_archivo(nombre_mapa, matriz):
     # Lee todos los mapas existentes para no sobreescribirlos
-    mapas_existentes = leer_todos_los_mapas()
+    mapas_existentes = leer_todos_los_mapas() #Ejecuta la funcion para hacerlos una lista
  
     # Verifica si ya existe un mapa con ese nombre y lo reemplaza
     encontrado = False
@@ -333,48 +328,48 @@ def guardar_mapa_archivo(nombre_mapa, matriz):
         mapas_existentes.append({"nombre": nombre_mapa, "matriz": matriz})  #Se crea un mapa nuevo y se agrega a la lista
  
     # Escribe todos los mapas de vuelta al archivo
-    archivo = open("mapas.txt", "w", encoding="utf-8")
-    for mapa in mapas_existentes:
-        archivo.write("NOMBRE:" + mapa["nombre"] + "\n")
-        for fila in mapa["matriz"]:
-            linea = ""
+    archivo = open("mapas.txt", "w", encoding="utf-8") #Abre el archivo
+    for mapa in mapas_existentes: #Por cada mapa en la lista
+        archivo.write("NOMBRE:" + mapa["nombre"] + "\n") #Pone el nombre
+        for fila in mapa["matriz"]: #Transcribe la matriz por filas
+            linea = "" #Reinicia las lineas
             for j in range(len(fila)):
-                if j < len(fila) - 1:
+                if j < len(fila) - 1: #Agrega coma
                     linea = linea + str(fila[j]) + ","
-                else:
+                else: #Si no combierte los valores enteros en strings
                     linea = linea + str(fila[j])
-            archivo.write(linea + "\n")
-        archivo.write("---\n")
+            archivo.write(linea + "\n") #Escribe las lineas
+        archivo.write("---\n") #Termina el mapa agregado con --- indicando el final del mapa
     archivo.close()
  
 # Función: leer_todos_los_mapas
 # Propósito: lee mapas.txt y devuelve una lista de diccionarios
 # con "nombre" y "matriz" de cada mapa guardado. Si el archivo no existe devuelve lista vacía.
-
 def leer_todos_los_mapas():
     mapas = [] #Se empieza con la lista vacia
     try:
-        archivo = open("mapas.txt", "r", encoding="utf-8")
-        lineas = archivo.readlines()   #Extrae lo escrito en el archivo
+        archivo = open("mapas.txt", "r", encoding="utf-8") #Busca el archivo
+        lineas = archivo.readlines()   #Extrae lo escrito en el archivo con una variable llamada lineas
         archivo.close()  #Cierra el archivo
     except:
         return mapas   # Si no existe el archivo, no hay mapas guardados
  
-    mapa_actual = None
-    for linea in lineas:
-        linea = linea.strip()
-        if linea.startswith("NOMBRE:"):
-            mapa_actual = {"nombre": linea[7:], "matriz": []}
-        elif linea == "---":
-            if mapa_actual is not None:
-                mapas.append(mapa_actual)
-                mapa_actual = None
-        elif mapa_actual is not None and linea != "":
-            # Convierte la línea de texto en una lista de enteros
+    #Busca los mapas uno por uno
+    mapa_actual = None #Empieza sin mapas
+    for linea in lineas: #busca en cada linea
+        linea = linea.strip() #obtine lo escrito en una linea y borra espacios
+        if linea.startswith("NOMBRE:"): #Si empieza con Nombre significa que es un mapa
+            mapa_actual = {"nombre": linea[7:], "matriz": []} #Obtiene el nombre y la matriz
+        elif linea == "---": #Si encuentra --- significa que leyo todo el mapa
+            if mapa_actual is not None: #Si ya registro un mapa
+                mapas.append(mapa_actual) #Lo agrega a la lista de mapas
+                mapa_actual = None #Marca que esta buscando otro mapa
+        elif mapa_actual is not None and linea != "": #Cuando ya no halla mapas
+            # Convierte la línea de texto en una lista de enteros cambia "0,1,1,0" a lista de enteros [0, 1, 1, 0]
             fila = []
-            for valor in linea.split(","):
-                fila.append(int(valor))
-            mapa_actual["matriz"].append(fila)
+            for valor in linea.split(","): #por cada coma
+                fila.append(int(valor)) #coge el valor entero
+            mapa_actual["matriz"].append(fila) #Convierte la matriz en una lista y agrega el valor recien convertido en entero
  
     return mapas
  
