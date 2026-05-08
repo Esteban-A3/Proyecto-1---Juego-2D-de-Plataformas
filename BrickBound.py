@@ -106,13 +106,13 @@ def mostrar_menu():
 
     # Botón JUGAR
     btn_jugar = tk.Button(frame_centro,text="▶  JUGAR", bg=COLOR_FONDO,fg=COLOR_BOTON,font=FUENTE_BOTON,relief=tk.FLAT,
-    bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_BOTON_HOVER,cursor="hand2",command=mostrar_nombre)
+    bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_BOTON_HOVER,cursor="hand2",command=verificar_nombre_J)
     btn_jugar.pack(pady=8)
     aplicar_hover(btn_jugar)
 
     # Botón EDITOR DE MAPAS
     btn_editor = tk.Button(frame_centro,text="✎  EDITOR DE MAPAS",bg=COLOR_FONDO,fg=COLOR_BOTON,font=FUENTE_BOTON,relief=tk.FLAT,
-    bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_BOTON_HOVER,cursor="hand2",command=mostrar_editor)
+    bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_BOTON_HOVER,cursor="hand2",command=verificar_nombre_E)
     btn_editor.pack(pady=8)
     aplicar_hover(btn_editor)
 
@@ -141,6 +141,21 @@ def mostrar_menu():
 # Seccion 1,5 - Nombre del Jugador
 # Pantalla donde se establece el nombre del jugador
 # -----------------------------------------------------------------
+
+#Función: verificar_nombre
+# Propósito: si el jugador no tiene nombre le pide uno
+# solo aparece una vez por sesion ya que una vez escrito el nombre esta funcion impide escribir otro
+def verificar_nombre_J():
+    if nombre_jugador == "":
+        mostrar_nombre()
+    else:
+        mostrar_seleccion_mapa()
+def verificar_nombre_E():
+    if nombre_jugador == "":
+        mostrar_nombre()
+    else:
+        mostrar_editor()
+
 
 # Función: generar_nombre_predeterminado
 # Propósito: si el jugador no ingresa un nombre, genera uno
@@ -214,7 +229,7 @@ def mostrar_nombre():
             nombre_jugador = generar_nombre_predeterminado()
         else:
             nombre_jugador = texto                  #Asigna a la variable el nombre escogido por el usuario
-        mostrar_seleccion_mapa()                    # Avanza a la siguiente pantalla
+        mostrar_menu()                    #Registra el nombre y permite avanzar
 
     # Botón CONFIRMAR — también responde al Enter
     btn_confirmar = tk.Button(frame_centro,text="▶  CONFIRMAR",bg=COLOR_FONDO,fg=COLOR_BOTON,font=FUENTE_BOTON,relief=tk.FLAT,bd=0,activebackground=COLOR_FONDO,
