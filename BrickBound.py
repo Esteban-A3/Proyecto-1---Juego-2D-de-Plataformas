@@ -258,7 +258,6 @@ def mostrar_nombre():
 # -----------------------------------------------------------------
 # SECCIÓN 2 — SELECCIÓN DE MAPA
 # -----------------------------------------------------------------
-
 # Mapa predeterminado — siempre disponible sin archivo externo.
 # 0=vacio 1=bloque 2=escalera 3=trampa 4=patrulla 5=lanzador 6=inicio 7=meta
 MAPA_PREDETERMINADO = {
@@ -383,12 +382,11 @@ def mostrar_seleccion_mapa():
  
 # -----------------------------------------------------------------
 # SECCIÓN 3 — JUEGO
-# Copia de esta sección va en: Diseño-de-Ventanas/ventana_juego.py
-# (Por implementar)
 # -----------------------------------------------------------------
 def mostrar_juego():
     pass  # TODO
  
+
 # -----------------------------------------------------------------
 # SECCIÓN 4 — EDITOR DE MAPAS
 # -----------------------------------------------------------------
