@@ -1,5 +1,7 @@
 import tkinter as tk
-
+import os
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # -----------------------------------------------------------------
 # BrickBound — main.py
 # Curso: Introducción a la Programación LL — ITCR
@@ -346,13 +348,13 @@ def guardar_mapa_archivo(nombre_mapa, matriz):
 # Propósito: lee mapas.txt y devuelve una lista de diccionarios
 # con "nombre" y "matriz" de cada mapa guardado. Si el archivo no existe devuelve lista vacía.
 def leer_todos_los_mapas():
-    mapas = [] #Se empieza con la lista vacia
-    try:
-        archivo = open("mapas.txt", "r", encoding="utf-8") #Busca el archivo
-        lineas = archivo.readlines()   #Extrae lo escrito en el archivo con una variable llamada lineas
-        archivo.close()  #Cierra el archivo
-    except:
-        return mapas   # Si no existe el archivo, no hay mapas guardados
+    mapas = []
+    if not os.path.exists("mapas.txt"): #veridica que exista un archivo
+        return mapas
+
+    archivo = open("mapas.txt", "r", encoding="utf-8") # lee el archivo
+    lineas = archivo.readlines() #lee las lineas
+    archivo.close()   # Si no existe el archivo, no hay mapas guardados
  
     #Busca los mapas uno por uno
     mapa_actual = None #Empieza sin mapas
@@ -643,39 +645,45 @@ def mostrar_editor():
 # Propósito: lee puntajes.txt y estrae los puntajes guardados en una lista
 def leer_puntajes():
     puntajes = []
-    try:
-        archivo = open("puntajes.txt", "r", encoding="utf-8") #Abre el archivo
-        lineas = archivo.readlines() #Guarda las lineas
-        archivo.close() #Lo cierra
-    except:
-        return puntajes  
-    for linea in lineas:
-        linea = linea.strip()
-        if linea == "":
-            continue
-        partes = linea.split(";")
-        if len(partes) == 2:
-            puntajes.append([partes[0], int(partes[1])])
-    for i in range(len(puntajes)):
-        for j in range(len(puntajes) - 1 - i):
-            if puntajes[j][1] < puntajes[j + 1][1]:
-                puntajes[j], puntajes[j + 1] = puntajes[j + 1], puntajes[j]
+    if not os.path.exists("puntajes.txt"):  #Verifica si hay un archivo
+        return puntajes #Si no hay retorna nada
+
+    #Si si hay define; 
+    archivo = open("puntajes.txt", "r", encoding="utf-8") #Abre el archivo
+    lineas = archivo.readlines() #Lee las lineas y las copia
+    archivo.close() #Cierra el archivo
+
+    for linea in lineas: #Para todas las lineas que se copiaron en del archivo
+        linea = linea.strip()  #Lee lo que esta escrito
+        if linea == "": #Si no dice nada
+            continue #Continua y no ejecuta el 
+        partes = linea.split(";") #Corta la coma y lo devuelve en lista ya que cada archivo se ve asi; "Brick Player 1;1500"
+        if len(partes) == 2:  #Esto es por si la lista formada tiene mas elementos o menos
+            puntajes.append([partes[0], int(partes[1])]) #Hace que la lista tenga el nombre como texto(el primero) y su puntaje como numero
+
+    #Lee la lista creada anteriormente; [[Ana, 500], [Luis, 1200], [Maria, 800]]
+    for i in range(len(puntajes)): #Por cada elemento de la lista, recordar que son dos elementos
+        for j in range(len(puntajes) - 1 - i): #Lee los elementos de las listas dentro de puntaje
+            if puntajes[j][1] < puntajes[j + 1][1]: #El j es el nombnre del jugador y el 1 el puntaje ya que es una lista
+                puntajes[j], puntajes[j + 1] = puntajes[j + 1], puntajes[j] #Compara los resultados y obtiene una lista de mayor a menor
+
     return puntajes
 
 # Función: guardar_puntaje
 # Propósito: guarda los puntajes hechos por los jugadores reescrbiendo el archivo
 def guardar_puntaje(nombre, puntaje):
-    puntajes = leer_puntajes() #Define los puntajes con la funcion para abrir el archivo de puntajes
-    puntajes.append([nombre, puntaje]) #
-    for i in range(len(puntajes)):
-        for j in range(len(puntajes) - 1 - i):
-            if puntajes[j][1] < puntajes[j + 1][1]:
-                puntajes[j], puntajes[j + 1] = puntajes[j + 1], puntajes[j]
-    puntajes = puntajes[:5]
-    archivo = open("puntajes.txt", "w", encoding="utf-8")
-    for entrada in puntajes:
-        archivo.write(entrada[0] + ";" + str(entrada[1]) + "\n")
-    archivo.close()
+    puntajes = leer_puntajes() #Define los puntajes con la funcion para abrir el archivo de puntajes, esto devuelve una lista
+    puntajes.append([nombre, puntaje]) #Hace una lista con el nombre y el puntaje recien formado
+    #Lee los puntajes dados por la lista devuelta
+    for i in range(len(puntajes)): #Por cada elemento de la lista(son listas)
+        for j in range(len(puntajes) - 1 - i):#Obtine los elementos de la lista seleccionada de puntajes
+            if puntajes[j][1] < puntajes[j + 1][1]: #Compara los jugadores
+                puntajes[j], puntajes[j + 1] = puntajes[j + 1], puntajes[j] #Los ordena de mayor a menor
+    puntajes = puntajes[:5] #Corta la lista para que solo entren los 5 mejores
+    archivo = open("puntajes.txt", "w", encoding="utf-8") #Abre el archivo, lo ejecuta en modo escritura, y el formato
+    for entrada in puntajes: #Por cada puntaje de la lista
+        archivo.write(entrada[0] + ";" + str(entrada[1]) + "\n") #Lo trascribe
+    archivo.close() #Cierra el archivo
 
 # Función: mostrar_puntajes
 # Es la funcion que muestra la pantalla donde se encuentran los puntajes
