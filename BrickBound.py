@@ -282,110 +282,104 @@ MAPA_PREDETERMINADO = {
     ]
 }
 
-# Función: crear_matriz_vacia
-# Propósito: genera una matriz de FILAS x COLUMNAS llena de ceros que representa el mapa vacío al abrir el editor.
+# Función: obtener_lista_mapas
+# Propósito: Obtiene la lista de mapas dada por la funcion leer mapas ademas hace una nueva lista con el mapa predeterminado como primero
 def obtener_lista_mapas():
-    mapas = [MAPA_PREDETERMINADO]
-    guardados = leer_todos_los_mapas()
-    for m in guardados:
-        mapas.append(m)
+    mapas = [MAPA_PREDETERMINADO] #Crea una nueva lista con los mapas y teniendo de primero el mapa redeterminado
+    guardados = leer_todos_los_mapas() #Extrae los mapas guardados
+    for m in guardados: #por cada mapa que extrae
+        mapas.append(m) #Los agrega en la lista
     return mapas
 
 def mostrar_seleccion_mapa():
-    global mapa_seleccionado
-    for widget in ventana.winfo_children():
-        widget.destroy()
 
+    global mapa_seleccionado #Estrae la variable para saber que selecciono
+    for widget in ventana.winfo_children(): #Por cada elemento en la pantalla
+        widget.destroy() #Lo borra
+
+    #Dimensiones
     ancho = 800
     alto  = 600
 
-    canvas_fondo = tk.Canvas(ventana, width=ancho, height=alto,
-                             bg=COLOR_FONDO, highlightthickness=0)
+    #El canvas de fondo para los cuadros
+    canvas_fondo = tk.Canvas(ventana, width=ancho, height=alto,bg=COLOR_FONDO, highlightthickness=0)
     canvas_fondo.place(x=0, y=0)
     dibujar_fondo_pixel(canvas_fondo, ancho, alto)
     canvas_fondo.create_rectangle(0, 0, ancho, 4, fill=COLOR_TITULO, outline="")
     canvas_fondo.create_rectangle(0, alto - 4, ancho, alto, fill=COLOR_TITULO, outline="")
 
+    #Frame del centro donde va la informacion
     frame_centro = tk.Frame(ventana, bg=COLOR_FONDO)
     frame_centro.place(relx=0.5, rely=0.5, anchor="center")
 
-    label_titulo = tk.Label(frame_centro, text="BRICKBOUND",
-                            bg=COLOR_FONDO, fg=COLOR_TITULO, font=FUENTE_TITULO)
+    #Titulo del juego
+    label_titulo = tk.Label(frame_centro, text="BRICKBOUND",bg=COLOR_FONDO, fg=COLOR_TITULO, font=FUENTE_TITULO)
     label_titulo.pack(pady=(0, 4))
-    parpadeo_texto(label_titulo, [True])
+    parpadeo_texto(label_titulo, [True]) #Parpadeo
 
-    tk.Label(frame_centro, text="SELECCIONA UN MAPA",
-             bg=COLOR_FONDO, fg=COLOR_SUBTITULO, font=FUENTE_SUBTITULO).pack(pady=(0, 16))
+    #Subtitulo
+    tk.Label(frame_centro, text="SELECCIONA UN MAPA",bg=COLOR_FONDO, fg=COLOR_SUBTITULO, font=FUENTE_SUBTITULO).pack(pady=(0, 16))
 
-    tk.Label(frame_centro, text="-- [] ---------------------- [] --",
-             bg=COLOR_FONDO, fg=COLOR_ACENTO, font=FUENTE_PEQUENA).pack(pady=(0, 12))
+    #Decoracion
+    tk.Label(frame_centro, text="-- [] ---------------------- [] --",bg=COLOR_FONDO, fg=COLOR_ACENTO, font=FUENTE_PEQUENA).pack(pady=(0, 12))
 
+    #Crea un frame lista para poder ubicar los nombres verticalmente
     frame_lista = tk.Frame(frame_centro, bg=COLOR_FONDO)
     frame_lista.pack(pady=(0, 12))
 
+    #Variable con los mapas
     mapas = obtener_lista_mapas()
 
+    #Funcion que establece el mapa seleccionado y lo registra en la variable
     def seleccionar_y_jugar(mapa):
         global mapa_seleccionado
         mapa_seleccionado = mapa
-        mostrar_juego()
+        mostrar_juego() #Ejecuta el juego
 
-    for i in range(len(mapas)):
-        mapa = mapas[i]
-        es_predeterminado = (i == 0)
+    for i in range(len(mapas)): #Por cada mapa en la lista de mapas
+        mapa = mapas[i] #El mapa es la posicion donde se encuentra en la lista
+        es_predeterminado = (i == 0) #Exepto el predeterminado
 
+        #Crea un frame de fila para poder escribir los mapas y que se vea ordenado
         frame_fila = tk.Frame(frame_lista, bg=COLOR_FONDO)
         frame_fila.pack(fill="x", pady=3)
 
-        # Estrella para el mapa predeterminado
+        #Simbolos
         if es_predeterminado:
-            tk.Label(frame_fila, text="*", bg=COLOR_FONDO, fg=COLOR_TITULO,
-                     font=("Courier", 14, "bold"), width=3).pack(side="left")
+            tk.Label(frame_fila, text="*", bg=COLOR_FONDO, fg=COLOR_TITULO,font=("Courier", 12, "bold"), width=3).pack(side="left") #Estrella para el predeterminado
         else:
-            tk.Label(frame_fila, text="  ", bg=COLOR_FONDO, width=3).pack(side="left")
+            tk.Label(frame_fila, text="✎", bg=COLOR_FONDO,fg=COLOR_BOTON,font=("Courier", 12, "bold"), width=3).pack(side="left") #Lapiz para los demas que son creados con el editor de mapas
 
-        color_nombre = COLOR_TITULO if es_predeterminado else COLOR_BOTON
-        fuente_nombre = ("Courier", 13, "bold") if es_predeterminado else ("Courier", 12)
+        #Colores y funente de las letras
+        color_nombre = COLOR_TITULO if es_predeterminado else COLOR_BOTON  #Amarillo por si es predeterminado, si no el color gris
+        fuente_nombre = ("Courier", 12, "bold") #Fuente
 
-        btn_mapa = tk.Button(frame_fila,
-                             text=mapa["nombre"],
-                             bg=COLOR_FONDO, fg=color_nombre,
-                             font=fuente_nombre,
-                             relief=tk.FLAT, bd=0,
-                             activebackground=COLOR_FONDO,
-                             activeforeground=COLOR_BOTON_HOVER,
-                             cursor="hand2", anchor="w", width=30,
-                             command=lambda m=mapa: seleccionar_y_jugar(m))
+        #Diseño de los boton para seleccionar el mapa
+        btn_mapa = tk.Button(frame_fila,text=mapa["nombre"],bg=COLOR_FONDO, fg=color_nombre,font=fuente_nombre, relief=tk.FLAT, bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_BOTON_HOVER,cursor="hand2", anchor="w", width=30,
+        command=lambda m=mapa: seleccionar_y_jugar(m))
         btn_mapa.pack(side="left")
-        btn_mapa.bind("<Enter>", lambda e, b=btn_mapa: b.config(fg=COLOR_BOTON_HOVER))
-        btn_mapa.bind("<Leave>", lambda e, b=btn_mapa, c=color_nombre: b.config(fg=c))
+        btn_mapa.bind("<Enter>", lambda e, b=btn_mapa: b.config(fg=COLOR_BOTON_HOVER)) #Color al presionar
+        btn_mapa.bind("<Leave>", lambda e, b=btn_mapa, c=color_nombre: b.config(fg=c)) #Color al pasar el puntero por encima
 
-        puntaje_base = calcular_puntaje_mapa(mapa["matriz"])
-        tk.Label(frame_fila, text=str(puntaje_base) + " pts",
-                 bg=COLOR_FONDO, fg=COLOR_SUBTITULO,
-                 font=("Courier", 10)).pack(side="left", padx=(8, 0))
+        puntaje_base = calcular_puntaje_mapa(mapa["matriz"]) #Es el puntaje del mapa
+        #Texto del puntaje
+        tk.Label(frame_fila, text=str(puntaje_base) + " pts",bg=COLOR_FONDO, fg=COLOR_SUBTITULO,font=("Courier", 10)).pack(side="left", padx=(8, 0))
 
+    #Si solo hay un mapar(el predeterminado), que muestre un texto al jugador para que cree otro mapa
     if len(mapas) == 1:
-        tk.Label(frame_lista,
-                 text="(No hay mapas creados aun -- usa el Editor)",
-                 bg=COLOR_FONDO, fg=COLOR_ACENTO, font=FUENTE_PEQUENA).pack(pady=(8, 0))
+        tk.Label(frame_lista,text="(No hay mapas creados aun -- usa el Editor)",bg=COLOR_FONDO, fg=COLOR_ACENTO, font=FUENTE_PEQUENA).pack(pady=(8, 0))
 
-    tk.Label(frame_centro, text="-- [] ---------------------- [] --",
-             bg=COLOR_FONDO, fg=COLOR_ACENTO, font=FUENTE_PEQUENA).pack(pady=(4, 12))
+    #Decoracion
+    tk.Label(frame_centro, text="-- [] ---------------------- [] --",bg=COLOR_FONDO, fg=COLOR_ACENTO, font=FUENTE_PEQUENA).pack(pady=(4, 12))
 
-    btn_volver = tk.Button(frame_centro, text="<- VOLVER",
-                           bg=COLOR_FONDO, fg=COLOR_SUBTITULO,
-                           font=("Courier", 11), relief=tk.FLAT, bd=0,
-                           activebackground=COLOR_FONDO,
-                           activeforeground=COLOR_BOTON_HOVER,
-                           cursor="hand2", command=mostrar_menu)
+    #Boton para volver al menu
+    btn_volver = tk.Button(frame_centro, text="<- VOLVER",bg=COLOR_FONDO, fg=COLOR_SUBTITULO,font=("Courier", 11), relief=tk.FLAT, bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_BOTON_HOVER,cursor="hand2", command=mostrar_menu)
     btn_volver.pack()
-    btn_volver.bind("<Enter>", lambda e: btn_volver.config(fg=COLOR_BOTON_HOVER))
-    btn_volver.bind("<Leave>", lambda e: btn_volver.config(fg=COLOR_SUBTITULO))
+    btn_volver.bind("<Enter>", lambda e: btn_volver.config(fg=COLOR_BOTON_HOVER)) #Color al presioar
+    btn_volver.bind("<Leave>", lambda e: btn_volver.config(fg=COLOR_SUBTITULO)) #Color al pasar el mause
 
-    tk.Label(ventana, text="2026  BRICKBOUND  --  ITCR",
-             bg=COLOR_FONDO, fg=COLOR_ACENTO,
-             font=FUENTE_PEQUENA).place(relx=0.5, rely=0.97, anchor="center")
+    #Texto de pie de pagina
+    tk.Label(ventana, text="2026  BRICKBOUND  --  ITCR",bg=COLOR_FONDO, fg=COLOR_ACENTO,font=FUENTE_PEQUENA).place(relx=0.5, rely=0.97, anchor="center")
  
 # -----------------------------------------------------------------
 # SECCIÓN 3 — JUEGO
