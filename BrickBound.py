@@ -328,9 +328,10 @@ def guardar_mapa_archivo(nombre_mapa, matriz):
             break  #Rompe la iteracion
     if not encontrado:   #Si no se encuentra
         mapas_existentes.append({"nombre": nombre_mapa, "matriz": matriz})  #Se crea un mapa nuevo y se agrega a la lista
- 
+    
+    ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mapas.txt") #Crea una ruta
     # Escribe todos los mapas de vuelta al archivo
-    archivo = open("mapas.txt", "w", encoding="utf-8") #Abre el archivo
+    archivo = open(ruta, "w", encoding="utf-8") #Abre el archivo
     for mapa in mapas_existentes: #Por cada mapa en la lista
         archivo.write("NOMBRE:" + mapa["nombre"] + "\n") #Pone el nombre
         for fila in mapa["matriz"]: #Transcribe la matriz por filas
@@ -349,10 +350,11 @@ def guardar_mapa_archivo(nombre_mapa, matriz):
 # con "nombre" y "matriz" de cada mapa guardado. Si el archivo no existe devuelve lista vacía.
 def leer_todos_los_mapas():
     mapas = []
-    if not os.path.exists("mapas.txt"): #veridica que exista un archivo
+    ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mapas.txt")#Crea una ruta
+    if not os.path.exists(ruta): #veridica que exista un archivo
         return mapas
 
-    archivo = open("mapas.txt", "r", encoding="utf-8") # lee el archivo
+    archivo = open(ruta, "r", encoding="utf-8") # lee el archivo
     lineas = archivo.readlines() #lee las lineas
     archivo.close()   # Si no existe el archivo, no hay mapas guardados
  
@@ -645,11 +647,11 @@ def mostrar_editor():
 # Propósito: lee puntajes.txt y estrae los puntajes guardados en una lista
 def leer_puntajes():
     puntajes = []
-    if not os.path.exists("puntajes.txt"):  #Verifica si hay un archivo
+    ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "puntajes.txt") #Establece la ruta
+    if not os.path.exists(ruta):#Verifica si hay un archivo
         return puntajes #Si no hay retorna nada
-
     #Si si hay define; 
-    archivo = open("puntajes.txt", "r", encoding="utf-8") #Abre el archivo
+    archivo = open(ruta, "r", encoding="utf-8") #Abre el archivo
     lineas = archivo.readlines() #Lee las lineas y las copia
     archivo.close() #Cierra el archivo
 
@@ -680,7 +682,8 @@ def guardar_puntaje(nombre, puntaje):
             if puntajes[j][1] < puntajes[j + 1][1]: #Compara los jugadores
                 puntajes[j], puntajes[j + 1] = puntajes[j + 1], puntajes[j] #Los ordena de mayor a menor
     puntajes = puntajes[:5] #Corta la lista para que solo entren los 5 mejores
-    archivo = open("puntajes.txt", "w", encoding="utf-8") #Abre el archivo, lo ejecuta en modo escritura, y el formato
+    ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "puntajes.txt") #Establece la ruta
+    archivo = open(ruta, "w", encoding="utf-8")#Abre el archivo, lo ejecuta en modo escritura, y el formato
     for entrada in puntajes: #Por cada puntaje de la lista
         archivo.write(entrada[0] + ";" + str(entrada[1]) + "\n") #Lo trascribe
     archivo.close() #Cierra el archivo
