@@ -1,5 +1,1 @@
-Brick Player 1;2500
-The Killer;1800
-Brick Player 3;1500
-Maria;1200
-Brick Player 2;1200
+Brick Player 1;50000
