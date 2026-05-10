@@ -1,7 +1,8 @@
 import tkinter as tk
+import pygame
 import os
-import os
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(os.path.dirname(os.path.abspath(__file__))) #Es para las direcciones
+pygame.mixer.init() #Inicia el mixer de pygame
 # -----------------------------------------------------------------
 # BrickBound — main.py
 # Curso: Introducción a la Programación LL — ITCR
@@ -11,6 +12,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 #Variables globales utilizadas
 nombre_jugador = ""  #Se utiliza principalmente para registrar el nombre en la pantalla de Score ademas para poder implementar otras funciones
 mapa_seleccionado = None # Variable global que guarda el mapa elegido para pasarlo al juego
+musica_pausada  = False #Para saber si la musica global esta desactivada
+musica_activa   = False #Para saber si la musica global esta activa
+musica_actual   = ""   # para saber qué canción está cargada
 
 # ── Paleta de colores ──
 COLOR_FONDO       = "#0a0a0f"   # Negro azulado profundo
@@ -33,6 +37,48 @@ FUENTE_PEQUENA   = ("Courier", 9)
 # SECCIÓN 1 — MENÚ PRINCIPAL
 # Copia de esta sección va en: Diseño-de-Ventanas/ventana_menu.py
 # -----------------------------------------------------------------
+
+#Funciones para la musica global que suena en todas las pantallas exepto en el juego y en resultado
+def tocar_musica_menu():
+    global musica_pausada, musica_activa, musica_actual
+    ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)),"BrickBound Oficial Song", "New Brick.mp3")
+    if musica_actual != "menu":
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load(ruta)
+        pygame.mixer.music.play(-1)   # -1 = loop infinito
+        musica_actual  = "menu"
+        musica_activa  = True
+        musica_pausada = False
+
+def tocar_musica_juego():
+    global musica_pausada, musica_activa, musica_actual
+    ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)),"BrickBound Oficial Song", "BrakeBrick.mp3")
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load(ruta)
+    pygame.mixer.music.play(-1)
+    musica_actual  = "juego"
+    musica_activa  = True
+    musica_pausada = False
+
+def parar_musica():
+    global musica_pausada, musica_activa, musica_actual
+    pygame.mixer.music.stop()
+    musica_activa  = False
+    musica_pausada = False
+    musica_actual  = ""
+
+def alternar_musica():
+    global musica_pausada, musica_activa
+    if musica_activa:
+        pygame.mixer.music.pause()
+        musica_activa  = False
+        musica_pausada = True
+    elif musica_pausada:
+        pygame.mixer.music.unpause()
+        musica_activa  = True
+        musica_pausada = False
+
+
 # Función auxiliar: efecto hover en botones
 # Cambia color al pasar y al salir el mouse del botón
 def aplicar_hover(boton):
@@ -70,6 +116,9 @@ def mostrar_menu():
     # Limpiar ventana
     for widget in ventana.winfo_children():
         widget.destroy()
+
+    #Llama a la funcion para poner la musica global
+    tocar_musica_menu()
 
     #Dimensiones
     ancho = 800
@@ -136,6 +185,10 @@ def mostrar_menu():
     btn_salir.bind("<Enter>", lambda e: btn_salir.config(fg=COLOR_BOTON_HOVER)) #Eventos de presionar, ademas tiene un lamba para identificar si es presionado pero no activado
     btn_salir.bind("<Leave>", lambda e: btn_salir.config(fg=COLOR_SUBTITULO))
 
+    #Boton para la musica, para la cancion
+    btn_musica_menu = tk.Button(ventana,text="♪ MUSICA",bg=COLOR_FONDO,fg=COLOR_SUBTITULO,font=("Courier", 9),relief=tk.FLAT, bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_TITULO,cursor="hand2",command=alternar_musica)
+    btn_musica_menu.place(relx=0.99, rely=0.97, anchor="se")
+
     # ── Pie de página ──
     tk.Label(ventana,text="© 2026  BRICKBOUND  —  ITCR  Introducción a la Programación LL",bg=COLOR_FONDO,fg=COLOR_ACENTO,
              font=FUENTE_PEQUENA).place(relx=0.5, rely=0.97, anchor="center")
@@ -181,6 +234,9 @@ def mostrar_nombre():
     global nombre_jugador #importa la variable del nombre 
     for widget in ventana.winfo_children():    #Escanea todos los elementos de la pantalla anterior
         widget.destroy()  #Los destrulle
+
+    #Llama a la funcion para poner la musica global
+    tocar_musica_menu()
 
     #Dimensiones del canvas
     ancho = 800 
@@ -295,6 +351,9 @@ def mostrar_seleccion_mapa():
     global mapa_seleccionado #Estrae la variable para saber que selecciono
     for widget in ventana.winfo_children(): #Por cada elemento en la pantalla
         widget.destroy() #Lo borra
+
+    #Llama a la funcion para poner la musica global
+    tocar_musica_menu()
 
     #Dimensiones
     ancho = 800
@@ -990,11 +1049,7 @@ def dibujar_frame(canvas_juego, canvas_hud, matriz, frame_meta):
                                 fill=COLOR_TITULO, outline="")
 
     # Nombre del juego parpadeante en el HUD — se maneja desde el loop
-    canvas_hud.create_text(20, ALTO_HUD // 2,
-                           text="BRICKBOUND",
-                           fill=COLOR_TITULO,
-                           font=("Courier", 16, "bold"),
-                           anchor="w")
+    canvas_hud.create_text(20, ALTO_HUD // 2,text="BRICKBOUND",fill=COLOR_TITULO,font=("Courier", 16, "bold"),anchor="w")
 
     # Vidas
     vidas_texto = "VIDAS: " + ("♥ " * estado_juego["vidas"]).strip()
@@ -1022,6 +1077,9 @@ def mostrar_juego():
     # Limpia estado anterior
     for widget in ventana.winfo_children():
         widget.destroy()
+
+    #Llama a la funcion para poner la musica que se ejecuta en el juego
+    tocar_musica_juego()
 
     ventana.geometry("800x540")   # 540 = 60 HUD + 480 juego
 
@@ -1055,17 +1113,21 @@ def mostrar_juego():
     jugador["contador_anim"] = 0
 
     # ── HUD (arriba) ──
-    canvas_hud = tk.Canvas(ventana, width=ANCHO_JUEGO, height=ALTO_HUD,
-                           bg=COLOR_FONDO, highlightthickness=0)
+    canvas_hud = tk.Canvas(ventana, width=ANCHO_JUEGO, height=ALTO_HUD,bg=COLOR_FONDO, highlightthickness=0)
     canvas_hud.pack()
+
+    #Boton para la musica
+    btn_musica = tk.Button(ventana,text="♪ MUSICA",bg=COLOR_FONDO,fg=COLOR_SUBTITULO,font=("Courier", 9),relief=tk.FLAT, bd=0,activebackground=COLOR_FONDO,activeforeground=COLOR_TITULO,cursor="hand2",command=alternar_musica)
+    btn_musica.place(relx=0.50, rely=0.02, anchor="center")
 
     # ── Marco retro alrededor del área de juego ──
     frame_juego = tk.Frame(ventana, bg=COLOR_TITULO, padx=3, pady=3)
     frame_juego.pack()
 
+
+
     # ── Canvas del juego ──
-    canvas_juego = tk.Canvas(frame_juego, width=ANCHO_JUEGO, height=ALTO_JUEGO,
-                             bg=COLOR_FONDO, highlightthickness=0)
+    canvas_juego = tk.Canvas(frame_juego, width=ANCHO_JUEGO, height=ALTO_JUEGO,bg=COLOR_FONDO, highlightthickness=0)
     canvas_juego.pack()
 
     # ── Teclas ──
@@ -1290,6 +1352,10 @@ def mostrar_editor():
     #Iteracion que limpia la ventana
     for widget in ventana.winfo_children():
         widget.destroy()
+
+    #Llama a la funcion para poner la musica global
+    tocar_musica_menu()
+
     # La ventana del editor es más ancha para acomodar la grilla + panel
     ventana.geometry("1000x600")
  
@@ -1553,6 +1619,9 @@ def mostrar_puntajes():
     for widget in ventana.winfo_children(): #Por cada objeto en la ventana
         widget.destroy() #Lo destruye
 
+    #Llama a la funcion para poner la musica global
+    tocar_musica_menu()
+
     #Dimensiones
     ancho = 800
     alto  = 600
@@ -1622,6 +1691,9 @@ def mostrar_resultado(gano, puntaje):
     if estado_juego["loop_id"] is not None:
         ventana.after_cancel(estado_juego["loop_id"]) #Cancela el loop
         estado_juego["loop_id"] = None #cambia la variable
+
+    #Llama a la funcion para parar la musica
+    parar_musica()
 
     # Desvincula las teclas del juego
     ventana.unbind("<KeyPress>")

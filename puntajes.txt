@@ -1,1 +1,3 @@
 Brick Player 1;50000
+Brick Player 2;1750
+Brick Player 3;1450
