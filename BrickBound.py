@@ -916,7 +916,12 @@ def verificar_colisiones_jugador(matriz, canvas_juego):
 
     # ── Verificar trampa ──
     if hay_trampa_en(matriz, fil, col):
-        # Trampa: reinicia en el inicio sin quitar vida
+        estado_juego["vidas"] -= 1
+        estado_juego["puntaje"] -= PUNTAJE_PENALIZACION
+        if estado_juego["puntaje"] < 0:
+            estado_juego["puntaje"] = 0
+        if estado_juego["vidas"] <= 0:
+            return "derrota"
         ix, iy = encontrar_inicio(matriz)
         jugador["x"] = ix
         jugador["y"] = iy
