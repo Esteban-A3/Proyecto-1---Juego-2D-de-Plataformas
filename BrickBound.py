@@ -573,17 +573,13 @@ def cargar_sprites():
 
     # ENEMIGO PATRULLA — 48x48px, se deja en 48px
     sprites["patrulla_run"]  = [get_frame("Enemigo Patrulla/Run.png",  i, 48, 48) for i in range(12)]
-    sprites["patrulla_idle"] = [get_frame("Enemigo Patrulla/Idle.png", i, 48, 48) for i in range(11)]
  
     # Versiones espejo para cuando patrulla hacia la izquierda
     sprites["patrulla_run_e"]  = []
-    sprites["patrulla_idle_e"] = []
+
     for i in range(12):
         _, e = get_frame_con_espejo("Enemigo Patrulla/Run.png", i, 48, 48)
         sprites["patrulla_run_e"].append(e)
-    for i in range(11):
-        _, e = get_frame_con_espejo("Enemigo Patrulla/Idle.png", i, 48, 48)
-        sprites["patrulla_idle_e"].append(e)
  
 
     # ENEMIGO LANZADOR — 48x48px
@@ -896,7 +892,7 @@ def actualizar_proyectiles(matriz):
 #            También detecta si llegó a la meta.
 # Devuelve "victoria", "derrota" o None
 # ─────────────────────────────────────────────────────────────────
-def verificar_colisiones_jugador(matriz, canvas_juego):
+def verificar_colisiones_jugador(matriz):
     # Si está invencible no recibe daño
     if estado_juego["invencible"] > 0:
         estado_juego["invencible"] -= 1
@@ -1101,7 +1097,6 @@ def mostrar_juego():
     # Inicializa estado del juego
     estado_juego["vidas"]      = 3
     estado_juego["puntaje"]    = calcular_puntaje_mapa(matriz)
-    estado_juego["jugando"]    = True
     estado_juego["invencible"] = 0
 
     # Posiciona al jugador en el inicio del mapa
@@ -1156,8 +1151,6 @@ def mostrar_juego():
     #            Actualiza todo el estado y redibuja el frame.
     # ─────────────────────────────────────────────────────────────
     def loop_juego():
-        if not estado_juego["jugando"]:
-            return
 
         # Actualiza lógica
         actualizar_jugador(matriz)
@@ -1177,7 +1170,7 @@ def mostrar_juego():
             frame_meta[0] = (frame_meta[0] + 1) % 7
 
         # Verifica colisiones y condición de fin
-        resultado = verificar_colisiones_jugador(matriz, canvas_juego)
+        resultado = verificar_colisiones_jugador(matriz)
 
         # Dibuja el frame actual
         dibujar_frame(canvas_juego, canvas_hud, matriz, frame_meta)
@@ -1201,10 +1194,9 @@ def mostrar_juego():
 # SECCIÓN 4 — EDITOR DE MAPAS
 # -----------------------------------------------------------------
 # Constantes del editor
-FILAS          = 15
-COLUMNAS       = 25
+FILAS          = 15        #Tamaño de las filas
+COLUMNAS       = 25        # Tamaño de las columnas
 TAM_CELDA      = 32        # píxeles por celda
-ANCHO_PANEL    = 200       # ancho del panel de herramientas
 ANCHO_GRILLA   = COLUMNAS * TAM_CELDA   # 800px, es el ancho del espacio usable
 ALTO_GRILLA    = FILAS    * TAM_CELDA   # 480px, es largo del espacio usable
 # Códigos de cada elemento en la matriz, es usadado para calcular puntaje y para guardar el mapa
